@@ -172,6 +172,18 @@ RSpec.describe Keisan::AST::Node do
         ast_simple = ast.simplified
         expect(ast_simple.to_s).to eq "125*(a**3)*(b**3)"
       end
+
+      it "splits power of form x^(a+b) to x^a * y^b" do
+        ast = Keisan::AST.parse("(x*y)**(2+a)")
+        ast_simple = ast.simplified
+        expect(ast_simple.to_s).to eq "(x**2)*(x**a)*(y**2)*(y**a)"
+      end
+
+      it "nested exponents (a^b)^c are reduced to a^(b*c)" do
+        ast = Keisan::AST.parse("(a**b)**c")
+        ast_simple = ast.simplified
+        expect(ast_simple.to_s).to eq "a**(b*c)"
+      end
     end
   end
 

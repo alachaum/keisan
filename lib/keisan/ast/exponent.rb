@@ -25,14 +25,29 @@ module Keisan
         end
 
         if children.all? {|child| child.is_a?(ConstantLiteral)}
-          (children[0] ** children[1]).simplify(context)
-        elsif children[0].is_a?(AST::Times)
-          AST::Times.new(children[0].children.map do |term|
+          return (children[0] ** children[1]).simplify(context)
+        end
+
+        case children[0]
+        when AST::Exponent
+          return AST::Exponent.new([
+            children[0].children[0],
+            AST::Times.new([children[0].children[1], children[1]])
+          ]).simplify(context)
+        when AST::Times
+          return AST::Times.new(children[0].children.map do |term|
             AST::Exponent.new([term, children[1]])
           end).simplify(context)
         else
-          self
+          case children[1]
+          when AST::Plus
+            return AST::Times.new(children[1].children.map do |exponent|
+              AST::Exponent.new([children[0],exponent])
+            end).simplify(context)
+          end
         end
+
+        self
       end
     end
   end
