@@ -153,6 +153,26 @@ RSpec.describe Keisan::AST::Node do
         expect(ast_simple.value).to eq 14
       end
     end
+
+    context "bracketed expressions" do
+      it "combines a bunch of nested addition to a single addition" do
+        ast = Keisan::AST.parse("1+(y+(5+z)+z)")
+        ast_simple = ast.simplified
+        expect(ast_simple.to_s).to eq "6+y+z+z"
+      end
+
+      it "combines a bunch of nested multiplication to a single addition" do
+        ast = Keisan::AST.parse("1*(y*(5*z)*z)")
+        ast_simple = ast.simplified
+        expect(ast_simple.to_s).to eq "5*y*z*z"
+      end
+
+      it "combines an exponentiation of a product to separate terms" do
+        ast = Keisan::AST.parse("(5*a*b)**3")
+        ast_simple = ast.simplified
+        expect(ast_simple.to_s).to eq "125*(a**3)*(b**3)"
+      end
+    end
   end
 
   describe "to_s" do

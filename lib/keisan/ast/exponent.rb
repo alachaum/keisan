@@ -26,6 +26,10 @@ module Keisan
 
         if children.all? {|child| child.is_a?(ConstantLiteral)}
           (children[0] ** children[1]).simplify(context)
+        elsif children[0].is_a?(AST::Times)
+          AST::Times.new(children[0].children.map do |term|
+            AST::Exponent.new([term, children[1]])
+          end).simplify(context)
         else
           self
         end

@@ -2,7 +2,7 @@ module Keisan
   module AST
     class Operator < Parent
       def initialize(children = [], parsing_operators = [])
-        unless children.count == parsing_operators.count + 1
+        if !parsing_operators.empty? && children.count != parsing_operators.count + 1
           raise Keisan::Exceptions::ASTError.new("Mismatch of children and operators")
         end
 
