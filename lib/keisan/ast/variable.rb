@@ -33,6 +33,10 @@ module Keisan
           self
         end
       end
+
+      def hash
+        self.class.name.hash ^ name.hash
+      end
     end
   end
 end

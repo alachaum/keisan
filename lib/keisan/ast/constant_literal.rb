@@ -25,6 +25,10 @@ module Keisan
       def to_s
         value.to_s
       end
+
+      def hash
+        self.class.name.hash ^ value.hash
+      end
     end
   end
 end

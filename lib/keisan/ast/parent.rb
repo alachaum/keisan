@@ -46,6 +46,12 @@ module Keisan
         @children = @children.map {|child| child.simplify(context)}
         self
       end
+
+      def hash
+        self.class.name.hash ^ children.inject(0) do |res, child|
+          res ^ child.hash
+        end
+      end
     end
   end
 end
