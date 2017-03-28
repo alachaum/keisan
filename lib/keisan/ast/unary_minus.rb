@@ -14,7 +14,7 @@ module Keisan
         when AST::Number
           AST::Number.new(-child.value(context)).simplify(context)
         else
-          super
+          AST::Times.new([AST::Number.new(-1), child.simplify(context)])
         end
       end
     end

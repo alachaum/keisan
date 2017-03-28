@@ -61,6 +61,23 @@ RSpec.describe Keisan::AST::Node do
   end
 
   describe "simplify" do
+    context "unary plus and minus" do
+      it "gets rid of unary operators" do
+        ast = Keisan::AST.parse("+5")
+        expect(ast).to be_a(Keisan::AST::UnaryPlus)
+        simple = ast.simplified
+        expect(simple).to be_a(Keisan::AST::Number)
+        expect(simple.value).to eq 5
+
+        ast = Keisan::AST.parse("-n**2 * (-5 + (+x+1))")
+        simple = ast.simplified
+        expect(simple.to_s).to eq "(-1)*n**2*(-5+(x+1))"
+        # TODO
+        # expect(simple).to be_a(Keisan::AST::Number)
+        # expect(simple.value).to eq 5
+      end
+    end
+
     context "just numbers and arithmetic" do
       it "simplifies the expression" do
         ast = Keisan::AST.parse("1 + 3 + 5")
